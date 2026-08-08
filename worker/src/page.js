@@ -98,6 +98,12 @@ body { font-family:-apple-system,system-ui,"SF Pro","Helvetica Neue",sans-serif;
   <div class="card">
     <h3>选择目标位置</h3>
     <div class="coords" id="coords">点击地图或使用下方工具选择位置</div>
+    <div class="input-row" style="margin-top:10px">
+      <label style="font-size:13px;color:var(--gray);display:flex;align-items:center;gap:6px;white-space:nowrap">扰动半径(米)
+        <input id="radiusInput" type="number" min="0" max="5000" step="1" value="0" style="width:80px;flex:none" />
+      </label>
+      <span style="font-size:11px;color:var(--gray);line-height:1.3">每次定位在目标点周围随机偏移，0=关闭</span>
+    </div>
     <div class="row">
       <button class="btn btn-primary" id="saveBtn" onclick="save()">储存到设备</button>
       <button class="btn btn-secondary" onclick="addFav()">收藏位置</button>
@@ -325,7 +331,9 @@ function queryActive() {
       if (d.success && d.longitude && d.latitude) {
         activeLon = parseFloat(d.longitude);
         activeLat = parseFloat(d.latitude);
-        el.textContent = '经度 ' + activeLon.toFixed(6) + '  纬度 ' + activeLat.toFixed(6) + (d.accuracy ? '  精度 ' + d.accuracy + 'm' : '');
+        const rr = d.randomRadius || 0;
+        el.textContent = '经度 ' + activeLon.toFixed(6) + '  纬度 ' + activeLat.toFixed(6) + (d.accuracy ? '  精度 ' + d.accuracy + 'm' : '') + (rr ? '  扰动 ' + rr + 'm' : '');
+        document.getElementById('radiusInput').value = rr;
         renderFavs();
       } else {
         activeLon = null; activeLat = null;
@@ -360,7 +368,8 @@ async function save() {
   btn.textContent = '储存中...'; btn.disabled = true;
   showError(false);
   try {
-    const r = await fetch(SAVE_API + '?lon=' + lon + '&lat=' + lat + '&acc=25', {
+    const radius = parseInt(document.getElementById('radiusInput').value) || 0;
+    const r = await fetch(SAVE_API + '?lon=' + lon + '&lat=' + lat + '&acc=25&randomRadius=' + radius, {
       method: 'GET', mode: 'cors', cache: 'no-store'
     });
     const d = await r.json();
