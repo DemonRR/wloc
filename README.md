@@ -145,9 +145,12 @@ cd worker && npm install && npm test
 | longitude | 目标经度(在线选点优先) | null (透传) |
 | latitude | 目标纬度(在线选点优先) | null (透传) |
 | accuracy | 精度(米) | 25 |
+| randomRadius | 扰动半径(米)，每次定位在目标点周围随机偏移，0=关闭 | 0 |
 | logLevel | 日志级别 | info |
 
 优先级: 在线选点储存 > 模块参数 > 默认值
+
+> **扰动半径说明：** 启用后每次定位响应会在目标坐标周围指定米数内随机偏移，避免每次定位结果完全相同。Surge/Loon/Stash/Shadowrocket 可在模块参数中设置；QX 用户可通过选点页面设置。默认 0（关闭），不影响现有用户。
 
 </details>
 
@@ -270,3 +273,9 @@ Pages 和 Workers 功能完全一致，按需选择即可。
 
 - [proxypin-wloc-spoofer](https://github.com/FFF686868/proxypin-wloc-spoofer) - 原始 WLOC 定位修改思路 by FFF686868
 - [NSNanoCat/Util](https://github.com/NSNanoCat/util) - 跨平台脚本工具框架
+
+### 贡献者
+
+- [@YmlyZA](https://github.com/YmlyZA) - 百度地图支持、港澳台边界处理、GCJ 换算优化、回归测试覆盖 ([#83](https://github.com/Yu9191/wloc/pull/83))
+- [@YeTianXingShi](https://github.com/YeTianXingShi) - randomRadius 随机坐标扰动功能原始实现 ([#70](https://github.com/Yu9191/wloc/pull/70))
+- [@SajoLuo](https://github.com/SajoLuo) - Stash 响应格式修复 ([#66](https://github.com/Yu9191/wloc/pull/66))
